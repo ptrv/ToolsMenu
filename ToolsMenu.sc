@@ -23,7 +23,7 @@ ToolsMenu {
 
 	*add { |foldersToScan, foldersToShow|
 		var tools  = SCMenuGroup.new(nil, "Tools",9),midi, audio, files;
-		SCMenuItem.new(tools, "List Nodes").setShortCut( "ä" ).action_({
+		SCMenuItem.new(tools, "List Nodes").setShortCut( "#" ).action_({
 			"".postln;
 			Server.default.name.postln;
 			Server.default.queryAllNodes});
@@ -62,7 +62,7 @@ ToolsMenu {
 		//SCMenuItem.new(audio,  "Init Binaural Buffers").action_({BinAmbi2O.init});
 		SCMenuSeparator.new(tools);
 		//lang
-		SCMenuItem.new(tools,  "Auto Sintax Colorizing").setShortCut("ü").action_({
+		SCMenuItem.new(tools,  "Auto Sintax Colorizing").setShortCut("0").action_({
 		Document.current.keyDownAction_{|doc, char, mod, unicode, keycode|
 	  		  if(unicode==13 or:(unicode==32) or: (unicode==3)){
 	     		   Document.current.syntaxColorize

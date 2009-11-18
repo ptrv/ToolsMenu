@@ -113,7 +113,17 @@ ToolsMenu {
 				var menuGroup = SCMenuGroup.new(rootMenu, name);
 				//menuGroup = SCMenuGroup.new(rootMenu, name);
 				thepath.files.do{ |path|
-					SCMenuItem.new(menuGroup,  path.fileName).action_({Document.open(path.fullPath) });
+					SCMenuItem.new(menuGroup,  path.fileName).action_({
+						if((path.extension == "rtf") ||
+							(path.extension == "sc") ||
+							(path.extension == "scd") ||
+							(path.extension == "html")) {
+							Document.open(path.fullPath);
+						}
+						{
+							("open " ++ "'" ++ path.fullPath ++ "'"	 ++ "").unixCmd;
+						}
+					});
 				};
 				thepath.folders.do{ |path|
 					this.filesMenu(menuGroup,path.folderName,path)

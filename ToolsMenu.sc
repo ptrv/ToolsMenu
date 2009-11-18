@@ -74,7 +74,6 @@ ToolsMenu {
 			Document.current.autoComplete
 			});
 		SCMenuItem.new(tools,  "Quarks").action_({ Quarks.gui});
-		SCMenuItem.new(tools,  "Help GUI").action_({ Help.gui});
 		SCMenuItem.new(tools,  "ixiQuarks").action_({ XiiQuarks.new});
 		SCMenuItem.new(tools,  "ColorPicker").action_({ColorPicker()});
 		SCMenuItem( SCMenuGroup( tools, "Scripts" ), "Run" ).setShortCut( "r" ).action_({ thisProcess.run });

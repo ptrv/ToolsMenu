@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009, Miguel Negrão <miguel.negrao _at_ friendlyvirus _dot_ org>
+ * Copyright (C) 2009, Miguel Negr√£o <miguel.negrao _at_ friendlyvirus _dot_ org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,10 +23,19 @@ ToolsMenu {
 
 	*add { |foldersToScan, foldersToShow|
 		var tools  = SCMenuGroup.new(nil, "Tools",9),midi, audio, files;
-		SCMenuItem.new(tools, "List nodes").action_({
+		SCMenuItem.new(tools, "List Nodes").setShortCut( "√§" ).action_({
 			"".postln;
 			Server.default.name.postln;
 			Server.default.queryAllNodes});
+		SCMenuSeparator.new(tools);
+		SCMenuItem.new(tools, "Start History").action_({
+			History.clear.end;
+			History.start;
+		});
+		SCMenuItem.new(tools, "Stop History").action_({
+			History.end;
+			History.document;
+		});
 		SCMenuSeparator.new(tools);
 		//midi
 		midi = SCMenuGroup.new(tools,  "Midi");
@@ -53,7 +62,7 @@ ToolsMenu {
 		//SCMenuItem.new(audio,  "Init Binaural Buffers").action_({BinAmbi2O.init});
 		SCMenuSeparator.new(tools);
 		//lang
-		SCMenuItem.new(tools,  "Auto Sintax Colorizing").setShortCut("ü").action_({
+		SCMenuItem.new(tools,  "Auto Sintax Colorizing").setShortCut("√º").action_({
 		Document.current.keyDownAction_{|doc, char, mod, unicode, keycode|
 	  		  if(unicode==13 or:(unicode==32) or: (unicode==3)){
 	     		   Document.current.syntaxColorize
@@ -61,7 +70,7 @@ ToolsMenu {
 			}; 
 			
 		});
-		SCMenuItem.new(tools, "Auto completion").action_({
+		SCMenuItem.new(tools, "Auto Completion").action_({
 			Document.current.autoComplete
 			});
 		SCMenuItem.new(tools,  "Quarks").action_({ Quarks.gui});

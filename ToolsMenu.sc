@@ -20,13 +20,36 @@
  // initial release
  
 ToolsMenu {
-
+	
 	*add { |foldersToScan, foldersToShow|
 		var tools  = SCMenuGroup.new(nil, "Tools",9),midi, audio, files;
+		SCMenuItem.new(tools,  "Open startup.rtf").action_({ 
+			Document.open(PathName(Platform.userExtensionDir).pathOnly++"startup.rtf")
+			});
+		SCMenuSeparator.new(tools);
+		SCMenuItem.new(tools,  "Quarks.gui").action_({ Quarks.gui});
+		SCMenuItem.new(tools,  "Quarks.checkoutAll").action_({ Quarks.checkoutAll});
+		SCMenuSeparator.new(tools);
+	/*	SCMenuItem.new(tools, "Init GamePad").action_({
+				var dev, deviceID, spec = "Analog Rumble Pad";
+				GeneralHID.buildDeviceList;
+				deviceID = GeneralHID.findBy( 3888, 272, -98369536, 257 );
+				dev = GeneralHID.open( deviceID );
+				//postf("\n\t***\tInitialized % Gamepad Environment >>>gamepad<<<\nuse ~gamepad to access the instance\n", spec);
+				GeneralHID.startEventLoop;
+				dev.debug_(true);
+				
+				//postf("\n>>>Event loop runing: ___%___\n", GeneralHID.eventLoopIsRunning.asString);
+			});
+			SCMenuSeparator.new(tools);*/
 		SCMenuItem.new(tools, "List Nodes").setShortCut( "#" ).action_({
 			"".postln;
 			Server.default.name.postln;
 			Server.default.queryAllNodes});
+		SCMenuItem.new(tools, "List Buffers").action_({
+			"".postln;
+			Server.default.cachedBuffersDo { arg buf; [buf.bufnum, buf.path].postln}
+		});
 		SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools, "Start History").action_({
 			History.clear.end;
@@ -73,23 +96,32 @@ ToolsMenu {
 		SCMenuItem.new(tools, "Auto Completion").action_({
 			Document.current.autoComplete
 			});
-		SCMenuItem.new(tools,  "Quarks").action_({ Quarks.gui});
+		SCMenuSeparator.new(tools);
+		SCMenuItem.new(tools,  "SynthDescLib read+browse").action_({ 
+			SynthDescLib.read.global.browse
+			});
+		SCMenuItem.new(tools,  "Swing boot").action_({ SwingOSC.default.boot});
+		SCMenuItem.new(tools,  "Random helpfile").action_({ 
+			Document.open(PathName("Help").deepFiles.choose.fullPath)
+			});
+		SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools,  "ixiQuarks").action_({ XiiQuarks.new});
 		SCMenuItem.new(tools,  "ColorPicker").action_({ColorPicker()});
+	
 		SCMenuItem( SCMenuGroup( tools, "Scripts" ), "Run" ).setShortCut( "r" ).action_({ thisProcess.run });
 
 		//SCMenuSeparator.new(tools);
 		//Files
 		//files = SCMenuGroup.new(tools,  "Files");
-		files = SCMenuGroup.new(nil,  "Files");
-		
-		if(foldersToScan.notNil){
-			foldersToScan = foldersToScan.collect{ |path| PathName(path) };
-			foldersToScan.do{ |path|
-				this.filesMenu(files,path.name,path);
-			}
-		};
-		
+
+		/*files = SCMenuGroup.new(nil,  "Files");
+				if(foldersToScan.notNil){
+					foldersToScan = foldersToScan.collect{ |path| PathName(path) };
+					foldersToScan.do{ |path|
+						this.filesMenu(files,path.name,path);
+					}
+				};*/
+				
 		if(foldersToShow.notNil){
 			foldersToShow = foldersToShow.collect{ |path| PathName(path) };
 			foldersToShow.do { |path|
@@ -103,7 +135,11 @@ ToolsMenu {
 				};				
 			};
 		};
-	
+		
+/*		SCMenuItem.new(tools, "Reload ToolsMenu").action_({
+			this.refresh(foldersToScan, foldersToShow, files);
+		});
+*/	
 	}
 	
 	*filesMenu { arg rootMenu,name, thepath;
@@ -142,6 +178,29 @@ ToolsMenu {
 		
 	}
 	
+/*	*refresh { arg foldersToScan, foldersToShow, files;
+		if(foldersToScan.notNil){
+			foldersToScan = foldersToScan.collect{ |path| PathName(path) };
+			foldersToScan.do{ |path|
+				this.filesMenu(files,path.name,path);
+			}
+		};
+		
+		if(foldersToShow.notNil){
+			foldersToShow = foldersToShow.collect{ |path| PathName(path) };
+			foldersToShow.do { |path|
+				//this.filesMenu(nil,path.name,path);
+				var fm = SCMenuGroup.new(nil,path.name);
+				path.files.do { |path2|
+					this.filesMenu(fm,path2.name,path2);
+				};
+				path.folders.do { |path2|
+					this.filesMenu(fm,path2.name,path2);
+				};				
+			};
+		};
+	}
+*/	
 }
 
 + PathName {

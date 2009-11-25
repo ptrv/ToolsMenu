@@ -22,7 +22,7 @@
 ToolsMenu {
 	
 	*add { |foldersToScan, foldersToShow|
-		var tools  = SCMenuGroup.new(nil, "Tools",9),midi, audio, files;
+		var tools  = SCMenuGroup.new(nil, "Tools",9),midi, audio, files, guikit;
 		SCMenuItem.new(tools,  "Open startup.rtf").action_({ 
 			Document.open(PathName(Platform.userExtensionDir).pathOnly++"startup.rtf")
 			});
@@ -97,10 +97,24 @@ ToolsMenu {
 			Document.current.autoComplete
 			});
 		SCMenuSeparator.new(tools);
+		guikit = SCMenuGroup.new(tools, "GUI Kit");
+		SCMenuItem.new(guikit,  "Cocoa").action_({ 
+			GUI.cocoa;
+			"GUI Kit = Cocoa".postln;
+			});
+		if('SwingOSC'.asClass.notNil) {
+			SCMenuItem.new(guikit, "Swing").action_({
+				GUI.swing;
+				if(SwingOSC.default.serverRunning.not){
+					SwingOSC.default.boot;
+				};
+				"GUI Kit = Swing".postln;
+			});
+		};
+		SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools,  "SynthDescLib read+browse").action_({ 
 			SynthDescLib.read.global.browse
 			});
-		SCMenuItem.new(tools,  "Swing boot").action_({ SwingOSC.default.boot});
 		SCMenuItem.new(tools,  "Random helpfile").action_({ 
 			Document.open(PathName("Help").deepFiles.choose.fullPath)
 			});

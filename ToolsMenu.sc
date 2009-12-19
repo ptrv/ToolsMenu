@@ -42,7 +42,7 @@ ToolsMenu {
 				//postf("\n>>>Event loop runing: ___%___\n", GeneralHID.eventLoopIsRunning.asString);
 			});
 			SCMenuSeparator.new(tools);*/
-		SCMenuItem.new(tools, "List Nodes").setShortCut( "#" ).action_({
+		SCMenuItem.new(tools, "List Nodes").action_({
 			"".postln;
 			Server.default.name.postln;
 			Server.default.queryAllNodes});
@@ -121,7 +121,9 @@ ToolsMenu {
 		SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools,  "ixiQuarks").action_({ XiiQuarks.new});
 		SCMenuItem.new(tools,  "ColorPicker").action_({ColorPicker()});
-	
+		SCMenuItem.new(tools,  "Server window to front").setShortCut( "#" ).action_({
+			Server.internal.window.front;
+		});
 		SCMenuItem( SCMenuGroup( tools, "Scripts" ), "Run" ).setShortCut( "r" ).action_({ thisProcess.run });
 
 		//SCMenuSeparator.new(tools);

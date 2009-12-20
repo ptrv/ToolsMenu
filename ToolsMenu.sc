@@ -30,6 +30,19 @@ ToolsMenu {
 		SCMenuItem.new(tools,  "Quarks.gui").action_({ Quarks.gui});
 		SCMenuItem.new(tools,  "Quarks.checkoutAll").action_({ Quarks.checkoutAll});
 		SCMenuSeparator.new(tools);
+		SCMenuItem.new(tools, "Post incoming OSC traffic").action_({
+			(
+			thisProcess.recvOSCfunc = { |time, addr, msg| 
+				if(msg[0] != 'status.reply') {
+					"time: % sender: %\nmessage: %\n".postf(time, addr, msg); 
+				}  
+			}
+			);
+		});
+		SCMenuItem.new(tools, "Stop posting OSC traffc").action_({
+			thisProcess.recvOSCfunc = nil;
+		});
+		SCMenuSeparator.new(tools);
 	/*	SCMenuItem.new(tools, "Init GamePad").action_({
 				var dev, deviceID, spec = "Analog Rumble Pad";
 				GeneralHID.buildDeviceList;

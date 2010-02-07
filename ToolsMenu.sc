@@ -22,7 +22,7 @@
 ToolsMenu {
 	
 	*add { |foldersToScan, foldersToShow|
-		var tools  = SCMenuGroup.new(nil, "Tools",9),midi, audio, files, guikit;
+		var tools  = SCMenuGroup.new(nil, "Tools",9),midi, audio, files, guikit, soundcard;
 		SCMenuItem.new(tools,  "Open startup.rtf").action_({ 
 			Document.open(PathName(Platform.userExtensionDir).pathOnly++"startup.rtf")
 			});
@@ -42,6 +42,34 @@ ToolsMenu {
 		SCMenuItem.new(tools, "Stop posting OSC traffc").action_({
 			thisProcess.recvOSCfunc = nil;
 		});
+		SCMenuSeparator.new(tools);
+		soundcard = SCMenuGroup.new(tools, "Soundcard");
+		SCMenuItem.new(soundcard, "--> JackRouter").action_({
+			Server.local.options.device = "JackRouter";
+			Server.internal.options.device = "JackRouter";
+			"Selected soundcard: --> JackRouter".postln;
+		});
+		SCMenuItem.new(soundcard, "--> Soundflower (2ch)").action_({
+			Server.local.options.device = "Soundflower (2ch)";
+			Server.internal.options.device = "Soundflower (2ch)";
+			"Selected soundcard: --> Soundflower (2ch)".postln;
+		});
+		SCMenuItem.new(soundcard, "--> Soundflower (16ch)").action_({
+			Server.local.options.device = "Soundflower (16ch)";
+			Server.internal.options.device = "Soundflower (16ch)";
+			"Selected soundcard: --> Soundflower (16ch)".postln;
+		});
+		SCMenuItem.new(soundcard, "--> mic+out").action_({
+			Server.local.options.device = "mic+out";
+			Server.internal.options.device = "mic+out";
+			"Selected soundcard: --> mic+out".postln;
+		});
+		SCMenuItem.new(soundcard, "--> line+out").action_({
+			Server.local.options.device = "line+out";
+			Server.internal.options.device = "line+out";
+			"Selected soundcard: --> line+out".postln;
+		});
+		
 		SCMenuSeparator.new(tools);
 	/*	SCMenuItem.new(tools, "Init GamePad").action_({
 				var dev, deviceID, spec = "Analog Rumble Pad";
@@ -113,7 +141,7 @@ ToolsMenu {
 		guikit = SCMenuGroup.new(tools, "GUI Kit");
 		SCMenuItem.new(guikit,  "Cocoa").action_({ 
 			GUI.cocoa;
-			"GUI Kit = Cocoa".postln;
+			GUI.current.postln;
 			});
 		if('SwingOSC'.asClass.notNil) {
 			SCMenuItem.new(guikit, "Swing").action_({
@@ -121,7 +149,7 @@ ToolsMenu {
 				if(SwingOSC.default.serverRunning.not){
 					SwingOSC.default.boot;
 				};
-				"GUI Kit = Swing".postln;
+				GUI.current.postln;
 			});
 		};
 		SCMenuSeparator.new(tools);
@@ -143,14 +171,14 @@ ToolsMenu {
 		//Files
 		//files = SCMenuGroup.new(tools,  "Files");
 
-		/*files = SCMenuGroup.new(nil,  "Files");
+/*		files = SCMenuGroup.new(nil,  "Files");
 				if(foldersToScan.notNil){
 					foldersToScan = foldersToScan.collect{ |path| PathName(path) };
 					foldersToScan.do{ |path|
 						this.filesMenu(files,path.name,path);
 					}
-				};*/
-				
+				};
+*/				
 		if(foldersToShow.notNil){
 			foldersToShow = foldersToShow.collect{ |path| PathName(path) };
 			foldersToShow.do { |path|

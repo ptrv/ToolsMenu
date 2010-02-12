@@ -82,25 +82,26 @@ ToolsMenu {
 		
 		SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools, "Init GamePad").action_({
-				var dev, deviceID, spec = "Analog Rumble Pad";
+				var deviceID, spec = "AnalogRumblePad";
 				GeneralHID.buildDeviceList;
 				deviceID = GeneralHID.findBy( 3888, 272, -98369536, 257 );
-				dev = GeneralHID.open( deviceID );
+				~gamepad = GeneralHID.open( deviceID );
 				postf("\n\t***\tInitialized % Gamepad Environment >>>gamepad<<<\nuse ~gamepad to access the instance\n", spec);
 				GeneralHID.startEventLoop;
 				postf("\n>>>Event loop runing: ___%___\n", GeneralHID.eventLoopIsRunning.asString);
-/*				dev.setSpec(spec);
-				postf("Spec map setted to: %\nFollowing pseudomethods acces the states and actions:\n", spec);
-				dev.spec.map.keys.asList.sort.do{ |key|
-					postf("g['%']\n", key);
-				};*/
-				dev.debug_(true);
+				~gamepad.setSpec(spec);
+				postf("Spec map set to: %\nFollowing pseudomethods acces the states and actions:\n", spec);
+				~gamepad.spec.map.keys.asList.sort.do{ |key|
+					postf("~gamepad['%']\n", key);
+				};
+				~gamepad.debug_(true);
 				
 				//postf("\n>>>Event loop runing: ___%___\n", GeneralHID.eventLoopIsRunning.asString);
 			});
 			SCMenuItem.new(tools, "Close GamePad").action_({
 				GeneralHID.stopEventLoop;
 				postf("\n>>>Event loop running: ___%___\n", GeneralHID.eventLoopIsRunning.asString);
+				~gamepad.close;
 			});
 /*			SCMenuItem.new(tools, "Announce OSC").action_({
 				"open -a AnnounceOSC.app".unixCmd;

@@ -22,7 +22,7 @@
 ToolsMenu {
 	
 	*add { |foldersToScan, foldersToShow|
-		var tools  = SCMenuGroup.new(nil, "Tools",9),midi, audio, files, guikit, soundcard;
+		var tools  = SCMenuGroup.new(nil, "PVToolsMenu",9),midi, audio, files, guikit, soundcard;
 		SCMenuItem.new(tools,  "Open startup.rtf").action_({ 
 			Document.open(PathName(Platform.userExtensionDir).pathOnly++"startup.rtf")
 			});
@@ -41,6 +41,16 @@ ToolsMenu {
 		});
 		SCMenuItem.new(tools, "Stop posting OSC traffc").action_({
 			thisProcess.recvOSCfunc = nil;
+		});
+		SCMenuSeparator.new(tools);
+		SCMenuItem.new(tools, "Recording Manager").action_({
+			RecordingManager.new;
+		});
+		SCMenuItem.new(tools, "Open Recordings").action_({
+			("open" + thisProcess.platform.recordingsDir.quote).unixCmd;
+		});
+		SCMenuItem.new(tools, "Open Extensions").setShortCut("e", true, true).action_({
+			("open" + (Platform.userAppSupportDir++"/Extensions").quote).unixCmd;
 		});
 		SCMenuSeparator.new(tools);
 		soundcard = SCMenuGroup.new(tools, "Soundcard");
@@ -71,18 +81,35 @@ ToolsMenu {
 		});
 		
 		SCMenuSeparator.new(tools);
-	/*	SCMenuItem.new(tools, "Init GamePad").action_({
+		SCMenuItem.new(tools, "Init GamePad").action_({
 				var dev, deviceID, spec = "Analog Rumble Pad";
 				GeneralHID.buildDeviceList;
 				deviceID = GeneralHID.findBy( 3888, 272, -98369536, 257 );
 				dev = GeneralHID.open( deviceID );
-				//postf("\n\t***\tInitialized % Gamepad Environment >>>gamepad<<<\nuse ~gamepad to access the instance\n", spec);
+				postf("\n\t***\tInitialized % Gamepad Environment >>>gamepad<<<\nuse ~gamepad to access the instance\n", spec);
 				GeneralHID.startEventLoop;
+				postf("\n>>>Event loop runing: ___%___\n", GeneralHID.eventLoopIsRunning.asString);
+/*				dev.setSpec(spec);
+				postf("Spec map setted to: %\nFollowing pseudomethods acces the states and actions:\n", spec);
+				dev.spec.map.keys.asList.sort.do{ |key|
+					postf("g['%']\n", key);
+				};*/
 				dev.debug_(true);
 				
 				//postf("\n>>>Event loop runing: ___%___\n", GeneralHID.eventLoopIsRunning.asString);
 			});
-			SCMenuSeparator.new(tools);*/
+			SCMenuItem.new(tools, "Close GamePad").action_({
+				GeneralHID.stopEventLoop;
+				postf("\n>>>Event loop running: ___%___\n", GeneralHID.eventLoopIsRunning.asString);
+			});
+/*			SCMenuItem.new(tools, "Announce OSC").action_({
+				"open -a AnnounceOSC.app".unixCmd;
+				"If you don't have AnnounceOSC.app you have to download it from:".postln;
+				"http://cloud.github.com/downloads/cappelnord/AnnounceOSC/AnnounceOSCMacApp.zip".postln;
+				"and put it in your applications folder".postln;
+				"";
+			});
+*/			SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools, "List Nodes").action_({
 			"".postln;
 			Server.default.name.postln;
@@ -126,20 +153,28 @@ ToolsMenu {
 		//SCMenuItem.new(audio,  "Init Binaural Buffers").action_({BinAmbi2O.init});
 		SCMenuSeparator.new(tools);
 		//lang
-		SCMenuItem.new(tools,  "Auto Sintax Colorizing").setShortCut("0").action_({
+/*		SCMenuItem.new(tools,  "Auto Sintax Colorizing").setShortCut("0").action_({
 		Document.current.keyDownAction_{|doc, char, mod, unicode, keycode|
 	  		  if(unicode==13 or:(unicode==32) or: (unicode==3)){
 	     		   Document.current.syntaxColorize
 	   		 }
 			}; 
 			
-		});
+		});*/
 		SCMenuItem.new(tools, "Auto Completion").action_({
 			Document.current.autoComplete
 			});
+		SCMenuItem.new(tools, "Count lines").action_({
+			"Lines: ".post;
+			(Document.current.string.occurrencesOf($\n) + 1).postln;
+		});
+		SCMenuItem.new(tools, "Count characters").action_({
+			"Characters: ".post;
+			Document.current.string.size.postln;
+		});		
 		SCMenuSeparator.new(tools);
 		guikit = SCMenuGroup.new(tools, "GUI Kit");
-		SCMenuItem.new(guikit,  "Cocoa").action_({ 
+		SCMenuItem.new(guikit, "Cocoa").action_({ 
 			GUI.cocoa;
 			GUI.current.postln;
 			});
@@ -153,16 +188,22 @@ ToolsMenu {
 			});
 		};
 		SCMenuSeparator.new(tools);
-		SCMenuItem.new(tools,  "SynthDescLib read+browse").action_({ 
-			SynthDescLib.read.global.browse
+		SCMenuItem.new(tools, "SynthDescLib read+browse").action_({ 
+			SynthDescLib.read.global.browse;
 			});
-		SCMenuItem.new(tools,  "Random helpfile").action_({ 
+		SCMenuItem.new(tools, "Random helpfile").action_({ 
 			Document.open(PathName("Help").deepFiles.choose.fullPath)
 			});
+		SCMenuItem.new(tools, "Rebuild help tree").action_({
+			Help.rebuildTree;
+		});
 		SCMenuSeparator.new(tools);
-		SCMenuItem.new(tools,  "ixiQuarks").action_({ XiiQuarks.new});
-		SCMenuItem.new(tools,  "ColorPicker").action_({ColorPicker()});
-		SCMenuItem.new(tools,  "Server window to front").setShortCut( "#" ).action_({
+/*		SCMenuItem.new(tools, "REBOOT!").action_({
+			Server.default.reboot;
+		}).setShortCut("k", false, true); // CMD+SHIFT+r;
+*/		SCMenuItem.new(tools, "ixiQuarks").action_({ XiiQuarks.new});
+		SCMenuItem.new(tools, "ColorPicker").action_({ColorPicker()});
+		SCMenuItem.new(tools, "Server window to front").setShortCut( "#" ).action_({
 			Server.internal.window.front;
 		});
 		SCMenuItem( SCMenuGroup( tools, "Scripts" ), "Run" ).setShortCut( "r" ).action_({ thisProcess.run });
@@ -171,14 +212,14 @@ ToolsMenu {
 		//Files
 		//files = SCMenuGroup.new(tools,  "Files");
 
-/*		files = SCMenuGroup.new(nil,  "Files");
-				if(foldersToScan.notNil){
-					foldersToScan = foldersToScan.collect{ |path| PathName(path) };
-					foldersToScan.do{ |path|
-						this.filesMenu(files,path.name,path);
-					}
-				};
-*/				
+//		files = SCMenuGroup.new(nil,  "Files");
+//				if(foldersToScan.notNil){
+//					foldersToScan = foldersToScan.collect{ |path| PathName(path) };
+//					foldersToScan.do{ |path|
+//						this.filesMenu(files,path.name,path);
+//					}
+//				};
+				
 		if(foldersToShow.notNil){
 			foldersToShow = foldersToShow.collect{ |path| PathName(path) };
 			foldersToShow.do { |path|

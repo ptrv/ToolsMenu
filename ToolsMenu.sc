@@ -30,6 +30,9 @@ ToolsMenu {
 		SCMenuItem.new(tools,  "Quarks.gui").action_({ Quarks.gui});
 		SCMenuItem.new(tools,  "Quarks.checkoutAll").action_({ Quarks.checkoutAll});
 		SCMenuSeparator.new(tools);
+		SCMenuItem.new(tools, "Freq Analyzer").setShortCut("0", false, false).action_({
+			Server.default.freqscope;
+		});
 		SCMenuItem.new(tools, "Post incoming OSC traffic").action_({
 			(
 			thisProcess.recvOSCfunc = { |time, addr, msg| 
@@ -42,9 +45,17 @@ ToolsMenu {
 		SCMenuItem.new(tools, "Stop posting OSC traffc").action_({
 			thisProcess.recvOSCfunc = nil;
 		});
+/*		SCMenuItem.new(tools, "List Nodes").action_({
+			"".postln;
+			Server.default.name.postln;
+			Server.default.queryAllNodes});
+*/		SCMenuItem.new(tools, "List Buffers").action_({
+			"".postln;
+		Server.default.cachedBuffersDo { arg buf; [buf.bufnum, buf.path].postln}
+		});
 		SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools, "Recording Manager").action_({
-			RecordingManager.new;
+			RecordingManager.new(compressionType: "mp3");
 		});
 		SCMenuItem.new(tools, "Open Recordings").action_({
 			("open" + thisProcess.platform.recordingsDir.quote).unixCmd;
@@ -52,33 +63,7 @@ ToolsMenu {
 		SCMenuItem.new(tools, "Open Extensions").setShortCut("e", true, true).action_({
 			("open" + (Platform.userAppSupportDir++"/Extensions").quote).unixCmd;
 		});
-		SCMenuSeparator.new(tools);
-		soundcard = SCMenuGroup.new(tools, "Soundcard");
-		SCMenuItem.new(soundcard, "--> JackRouter").action_({
-			Server.local.options.device = "JackRouter";
-			Server.internal.options.device = "JackRouter";
-			"Selected soundcard: --> JackRouter".postln;
-		});
-		SCMenuItem.new(soundcard, "--> Soundflower (2ch)").action_({
-			Server.local.options.device = "Soundflower (2ch)";
-			Server.internal.options.device = "Soundflower (2ch)";
-			"Selected soundcard: --> Soundflower (2ch)".postln;
-		});
-		SCMenuItem.new(soundcard, "--> Soundflower (16ch)").action_({
-			Server.local.options.device = "Soundflower (16ch)";
-			Server.internal.options.device = "Soundflower (16ch)";
-			"Selected soundcard: --> Soundflower (16ch)".postln;
-		});
-		SCMenuItem.new(soundcard, "--> mic+out").action_({
-			Server.local.options.device = "mic+out";
-			Server.internal.options.device = "mic+out";
-			"Selected soundcard: --> mic+out".postln;
-		});
-		SCMenuItem.new(soundcard, "--> line+out").action_({
-			Server.local.options.device = "line+out";
-			Server.internal.options.device = "line+out";
-			"Selected soundcard: --> line+out".postln;
-		});
+//		SCMenuSeparator.new(tools);
 		
 		SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools, "Init GamePad").action_({
@@ -110,25 +95,42 @@ ToolsMenu {
 				"and put it in your applications folder".postln;
 				"";
 			});
-*/			SCMenuSeparator.new(tools);
-		SCMenuItem.new(tools, "List Nodes").action_({
-			"".postln;
-			Server.default.name.postln;
-			Server.default.queryAllNodes});
-		SCMenuItem.new(tools, "List Buffers").action_({
-			"".postln;
-			Server.default.cachedBuffersDo { arg buf; [buf.bufnum, buf.path].postln}
-		});
+*/
+		//SCMenuSeparator.new(tools);
 		SCMenuSeparator.new(tools);
-		SCMenuItem.new(tools, "Start History").action_({
-			History.clear.end;
-			History.start;
+		soundcard = SCMenuGroup.new(tools, "Soundcard");
+		SCMenuItem.new(soundcard, "--> JackRouter").action_({
+			Server.local.options.device = "JackRouter";
+			Server.internal.options.device = "JackRouter";
+			"Selected soundcard: --> JackRouter".postln;
 		});
-		SCMenuItem.new(tools, "Stop History").action_({
-			History.end;
-			History.document;
+		SCMenuItem.new(soundcard, "--> Soundflower (2ch)").action_({
+			Server.local.options.device = "Soundflower (2ch)";
+			Server.internal.options.device = "Soundflower (2ch)";
+			"Selected soundcard: --> Soundflower (2ch)".postln;
 		});
-		SCMenuSeparator.new(tools);
+		SCMenuItem.new(soundcard, "--> Soundflower (16ch)").action_({
+			Server.local.options.device = "Soundflower (16ch)";
+			Server.internal.options.device = "Soundflower (16ch)";
+			"Selected soundcard: --> Soundflower (16ch)".postln;
+		});
+		SCMenuItem.new(soundcard, "--> mic+out").action_({
+			Server.local.options.device = "mic+out";
+			Server.internal.options.device = "mic+out";
+			"Selected soundcard: --> mic+out".postln;
+		});
+		SCMenuItem.new(soundcard, "--> line+out").action_({
+			Server.local.options.device = "line+out";
+			Server.internal.options.device = "line+out";
+			"Selected soundcard: --> line+out".postln;
+		});
+		
+		//audio
+		audio = SCMenuGroup.new(tools,  "Audio");
+		SCMenuItem.new(audio,  "EQ").action_({MasterEQ.new});
+		SCMenuItem.new(audio,  "Rec").action_({ServerRecordWindow(Server.default)});
+		SCMenuItem.new(audio,  "Sound Card Options").action_({Server.deviceGuis});
+		//SCMenuItem.new(audio,  "Init Binaural Buffers").action_({BinAmbi2O.init});
 		//midi
 		midi = SCMenuGroup.new(tools,  "Midi");
 		SCMenuItem.new(midi,"Init").action_({
@@ -146,12 +148,21 @@ ToolsMenu {
 			MIDIIn.control = {}
 		});
 	
-		//audio
-		audio = SCMenuGroup.new(tools,  "Audio");
-		SCMenuItem.new(audio,  "EQ").action_({MasterEQ.new});
-		SCMenuItem.new(audio,  "Rec").action_({ServerRecordWindow(Server.default)});
-		SCMenuItem.new(audio,  "Sound Card Options").action_({Server.deviceGuis});
-		//SCMenuItem.new(audio,  "Init Binaural Buffers").action_({BinAmbi2O.init});
+		SCMenuSeparator.new(tools);
+		guikit = SCMenuGroup.new(tools, "GUI Kit");
+		SCMenuItem.new(guikit, "Cocoa").action_({ 
+			GUI.cocoa;
+			GUI.current.postln;
+			});
+		if('SwingOSC'.asClass.notNil) {
+			SCMenuItem.new(guikit, "Swing").action_({
+				GUI.swing;
+				if(SwingOSC.default.serverRunning.not){
+					SwingOSC.default.boot;
+				};
+				GUI.current.postln;
+			});
+		};		
 		SCMenuSeparator.new(tools);
 		//lang
 /*		SCMenuItem.new(tools,  "Auto Sintax Colorizing").setShortCut("0").action_({
@@ -174,20 +185,14 @@ ToolsMenu {
 			Document.current.string.size.postln;
 		});		
 		SCMenuSeparator.new(tools);
-		guikit = SCMenuGroup.new(tools, "GUI Kit");
-		SCMenuItem.new(guikit, "Cocoa").action_({ 
-			GUI.cocoa;
-			GUI.current.postln;
-			});
-		if('SwingOSC'.asClass.notNil) {
-			SCMenuItem.new(guikit, "Swing").action_({
-				GUI.swing;
-				if(SwingOSC.default.serverRunning.not){
-					SwingOSC.default.boot;
-				};
-				GUI.current.postln;
-			});
-		};
+		SCMenuItem.new(tools, "Start History").action_({
+			History.clear.end;
+			History.start;
+		});
+		SCMenuItem.new(tools, "Stop History").action_({
+			History.end;
+			History.document;
+		});
 		SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools, "SynthDescLib read+browse").action_({ 
 			SynthDescLib.read.global.browse;

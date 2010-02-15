@@ -30,9 +30,6 @@ ToolsMenu {
 		SCMenuItem.new(tools,  "Quarks.gui").action_({ Quarks.gui});
 		SCMenuItem.new(tools,  "Quarks.checkoutAll").action_({ Quarks.checkoutAll});
 		SCMenuSeparator.new(tools);
-		SCMenuItem.new(tools, "Freq Analyzer").setShortCut("0", false, false).action_({
-			Server.default.freqscope;
-		});
 		SCMenuItem.new(tools, "Post incoming OSC traffic").action_({
 			(
 			thisProcess.recvOSCfunc = { |time, addr, msg| 
@@ -44,14 +41,6 @@ ToolsMenu {
 		});
 		SCMenuItem.new(tools, "Stop posting OSC traffc").action_({
 			thisProcess.recvOSCfunc = nil;
-		});
-/*		SCMenuItem.new(tools, "List Nodes").action_({
-			"".postln;
-			Server.default.name.postln;
-			Server.default.queryAllNodes});
-*/		SCMenuItem.new(tools, "List Buffers").action_({
-			"".postln;
-		Server.default.cachedBuffersDo { arg buf; [buf.bufnum, buf.path].postln}
 		});
 		SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools, "Recording Manager").action_({
@@ -159,12 +148,12 @@ ToolsMenu {
 	
 		SCMenuSeparator.new(tools);
 		guikit = SCMenuGroup.new(tools, "GUI Kit");
-		SCMenuItem.new(guikit, "Cocoa").action_({ 
+		SCMenuItem.new(guikit, "--> Cocoa").action_({ 
 			GUI.cocoa;
 			GUI.current.postln;
 			});
 		if('SwingOSC'.asClass.notNil) {
-			SCMenuItem.new(guikit, "Swing").action_({
+			SCMenuItem.new(guikit, "--> Swing").action_({
 				GUI.swing;
 				if(SwingOSC.default.serverRunning.not){
 					SwingOSC.default.boot;
@@ -192,7 +181,20 @@ ToolsMenu {
 		SCMenuItem.new(tools, "Count characters").action_({
 			"Characters: ".post;
 			Document.current.string.size.postln;
-		});		
+		});
+		SCMenuSeparator.new(tools);
+		SCMenuItem.new(tools, "Freq Analyzer").setShortCut("0", false, false).action_({
+			Server.default.freqscope;
+		});
+/*		SCMenuItem.new(tools, "List Nodes").action_({
+			"".postln;
+			Server.default.name.postln;
+			Server.default.queryAllNodes});
+*/		SCMenuItem.new(tools, "List Buffers").action_({
+			"".postln;
+		Server.default.cachedBuffersDo { arg buf; [buf.bufnum, buf.path].postln}
+		});
+				
 		SCMenuSeparator.new(tools);
 		SCMenuItem.new(tools, "Start History").action_({
 			History.clear.end;
@@ -219,7 +221,7 @@ ToolsMenu {
 */		SCMenuItem.new(tools, "ixiQuarks").action_({ XiiQuarks.new});
 		SCMenuItem.new(tools, "ColorPicker").action_({ColorPicker()});
 		SCMenuItem.new(tools, "Server window to front").setShortCut( "#" ).action_({
-			Server.internal.window.front;
+			Server.default.window.front;
 		});
 		SCMenuItem( SCMenuGroup( tools, "Scripts" ), "Run" ).setShortCut( "r" ).action_({ thisProcess.run });
 

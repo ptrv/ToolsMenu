@@ -22,7 +22,7 @@
 ToolsMenu {
 	
 	*add { |foldersToScan, foldersToShow|
-		var tools  = SCMenuGroup.new(nil, "PVToolsMenu",9),midi, audio, files, guikit, soundcard;
+		var tools  = SCMenuGroup.new(nil, "PVToolsMenu",9),midi, audio, files, guikit, soundcard, serverdefault;
 		SCMenuItem.new(tools,  "Open startup.rtf").action_({ 
 			Document.open(PathName(Platform.userExtensionDir).pathOnly++"startup.rtf")
 			});
@@ -36,7 +36,7 @@ ToolsMenu {
 		SCMenuItem.new(tools, "Post incoming OSC traffic").action_({
 			(
 			thisProcess.recvOSCfunc = { |time, addr, msg| 
-				if(msg[0] != 'status.reply') {
+				if(msg[0] != '/status.reply') {
 					"time: % sender: %\nmessage: %\n".postf(time, addr, msg); 
 				}  
 			}
@@ -98,6 +98,15 @@ ToolsMenu {
 */
 		//SCMenuSeparator.new(tools);
 		SCMenuSeparator.new(tools);
+		serverdefault = SCMenuGroup.new(tools, "Default Server");
+		SCMenuItem.new(serverdefault, "--> localhost").action_({
+			Server.default = Server.local;
+			"Default server --> local".postln
+		});
+		SCMenuItem.new(serverdefault, "--> internal").action_({
+			Server.default = Server.internal;
+			"Default server --> internal".postln
+		});
 		soundcard = SCMenuGroup.new(tools, "Soundcard");
 		SCMenuItem.new(soundcard, "--> JackRouter").action_({
 			Server.local.options.device = "JackRouter";

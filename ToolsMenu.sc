@@ -102,6 +102,11 @@ ToolsMenu {
 			Server.internal.options.device = "JackRouter";
 			"Selected soundcard: --> JackRouter".postln;
 		});
+		SCMenuItem.new(soundcard, "--> FireWire 410 Multichannel").action_({
+			Server.local.options.device = "FireWire 410 Multichannel";
+			Server.internal.options.device = "FireWire 410 Multichannel";
+			"Selected soundcard: --> FireWire 410 Multichannel".postln;
+		});
 		SCMenuItem.new(soundcard, "--> Soundflower (2ch)").action_({
 			Server.local.options.device = "Soundflower (2ch)";
 			Server.internal.options.device = "Soundflower (2ch)";

@@ -233,7 +233,7 @@ ToolsMenu {
 		SCMenuItem.new(tools, "Server window to front").setShortCut( "#" ).action_({
 			Server.default.window.front;
 		});
-		SCMenuItem( SCMenuGroup( tools, "Scripts" ), "Run" ).setShortCut( "r" ).action_({ thisProcess.run });
+		//SCMenuItem( SCMenuGroup( tools, "Scripts" ), "Run" ).setShortCut( "r" ).action_({ thisProcess.run });
 
 		//SCMenuSeparator.new(tools);
 		//Files
@@ -345,8 +345,8 @@ ToolsMenu {
 
 
 
-// change the path to point to a file you want to run with cmd^run
-+ Main {
-		run { "/Users/peter/Library/Application Support/SuperCollider/Extensions/RedFolderGUI/RedFolderGUIStarter.rtf".load }
-}
+//// change the path to point to a file you want to run with cmd^run
+//+ Main {
+//		run { "/Users/peter/Library/Application Support/SuperCollider/Extensions/RedFolderGUI/RedFolderGUIStarter.rtf".load }
+//}
 			

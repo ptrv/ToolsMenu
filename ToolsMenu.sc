@@ -27,7 +27,7 @@
 ToolsMenu {
 	
 	*add { |foldersToScan, foldersToShow|
-		var tools  = SCMenuGroup.new(nil, "PVTools",9),midi, audio, files, guikit, soundcard, serverdefault;
+		var tools  = SCMenuGroup.new(nil, "PV",9),midi, audio, files, guikit, soundcard, serverdefault;
 		SCMenuItem.new(tools,  "Open startup.rtf").action_({ 
 			Document.open(PathName(Platform.userExtensionDir).pathOnly++"startup.rtf")
 			});

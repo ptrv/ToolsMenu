@@ -19,6 +19,11 @@
  // 16-05-2009 
  // initial release
  
+ 
+ /*
+	Modified by Peter Vasil, 2009, 2010, 2011 
+ */
+ 
 ToolsMenu {
 	
 	*add { |foldersToScan, foldersToShow|

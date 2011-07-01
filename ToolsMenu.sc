@@ -27,7 +27,7 @@
 ToolsMenu {
 	
 	*add { |foldersToScan, foldersToShow|
-		var tools  = SCMenuGroup.new(nil, "PV",9),midi, audio, files, guikit, soundcard, serverdefault;
+		var tools  = SCMenuGroup.new(nil, "ptrv",9),midi, audio, files, guikit, soundcard, serverdefault, layout;
 		SCMenuItem.new(tools,  "Open startup.rtf").action_({ 
 			Document.open(PathName(Platform.userExtensionDir).pathOnly++"startup.rtf")
 			});
@@ -156,6 +156,62 @@ ToolsMenu {
 			MIDIIn.control = {}
 		});
 	
+		SCMenuSeparator.new(tools);
+		
+		layout = SCMenuGroup.new(tools, "Layout");
+		SCMenuItem(layout, "Layout > STD")
+		.action_({
+		Document.listener
+			.title_("post")
+			.bounds_(Rect(5,Window.screenBounds.height - 530,500,500))
+			.font_(Font("Inconsolata", 13))
+			.background_(Color.new255(20, 28, 58, 240))
+			.stringColor_(Color.new255(231, 218, 30, 200));
+			//.alwaysOnTop_(true);
+			Document.postColor_(Document.listener.stringColor);
+		});
+		SCMenuItem(layout, "Layout > STD2")
+		.action_({
+		Document.listener
+			.title_("post")
+			.bounds_(
+				(Window.screenBounds.width-400 @ 0) @
+				(Window.screenBounds.width @ Window.screenBounds.height)
+			)
+			.font_(Font("Helvetica", 11))
+			.background_(Color.new255(20, 28, 58, 240))
+			.stringColor_(Color.new255(231, 218, 30, 200));
+			//.alwaysOnTop_(true);
+			Document.postColor_(Document.listener.stringColor);
+		});
+		SCMenuItem(layout, "Layout > EDU")
+		.action_({
+		Document.listener
+			.title_("post")
+			.bounds_((0@20)@(Window.screenBounds.width@250))
+			.font_(Font("Inconsolata", 22))
+			.background_(Color.new(0,0,0.4,1))
+			.stringColor_(Color.white)
+			.alwaysOnTop_(true);
+			Document.postColor_(Color.white);
+		});
+
+		SCMenuItem(layout, "Layout > DEV")
+		.action_({
+			Document.listener
+				.title_("console")
+				.bounds_(
+					(Window.screenBounds.width-400 @ 0) @
+					(Window.screenBounds.width @ Window.screenBounds.height)
+				)
+				.font_(Font("Inconsolata", 14))
+				.background_(Color.new(0,0,0,0.96))
+				.stringColor_(Color.green)
+				.alwaysOnTop_(false);
+			Document.postColor_(Color.green);
+		});
+
+		
 		SCMenuSeparator.new(tools);
 		guikit = SCMenuGroup.new(tools, "GUI Kit");
 		SCMenuItem.new(guikit, "--> Cocoa").action_({ 

@@ -156,6 +156,9 @@ ToolsMenu {
 			MIDIIn.control = {}
 		});
 	
+		SCMenuItem(tools, "Sound Tester").action_({
+			SoundTester.new;
+		});
 		SCMenuSeparator.new(tools);
 		
 		layout = SCMenuGroup.new(tools, "Layout");

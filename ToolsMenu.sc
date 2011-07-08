@@ -44,7 +44,7 @@ ToolsMenu {
 			}
 			);
 		});
-		SCMenuItem.new(tools, "Stop posting OSC traffc").action_({
+		SCMenuItem.new(tools, "Stop posting OSC traffic").action_({
 			thisProcess.recvOSCfunc = nil;
 		});
 		SCMenuSeparator.new(tools);
